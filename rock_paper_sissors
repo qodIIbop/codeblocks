@@ -1,0 +1,9 @@
+make a program to play rock, paper, sissors against the computer.
+Comp chooses at random. Player types a number between 0-3. Ask player if he wants to go another round.
+
+0=rock
+1=paper
+2=sissors
+
+Algorithm:
+0<2,1<0,2<1,
