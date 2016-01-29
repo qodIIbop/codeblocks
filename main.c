@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 int space, word, nl, letter;
 
@@ -37,9 +38,9 @@ void wordcount()
 int main()
 {
     char ch,c;
-    FILE *TXT;
-    TXT=fopen("/test.txt","r");
-    while((ch=fgetc(TXT))!=EOF)
+    FILE *txt;
+    txt=fopen("test","r");
+    while((ch=fgetc(txt))!=EOF)
     {
         if(ch=='a' || ch=='b' || ch=='c' || ch=='d' || ch=='e' || ch=='f' || ch=='g' || ch=='h' || ch=='i' || ch=='j' || ch=='k' || ch=='l' || ch=='m' || ch=='n' || ch=='o' || ch=='p' || ch=='q' || ch=='r' || ch=='s' || ch=='t' || ch=='u' || ch=='v' || ch=='w' || ch=='x' || ch=='y' || ch=='z')
         {
@@ -62,6 +63,7 @@ int main()
             word++;
         }
     }
+    fclose(txt);
 //    read_file();
 //    numberofwords=wordcount();
     printf("The number of letters in the text is:%d\nThe number of words is:%d\nThe number of spaces is:%d\nThe number of new lines is:%d",letter,word,space,nl);
