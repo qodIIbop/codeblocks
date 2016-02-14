@@ -1,71 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <ctype.h>
 
-int space, word, nl, letter;
 
-/*void read_file()
-{
-    char ch;
-    FILE *TXT;
-    while((ch=fgetc(TXT))!=EOF)
-    {
-        if(ch()='a' || ch()='b' || ch()='c' || ch()='d' || ch()='e' || ch()='f' || ch()='g' || ch()='h' || ch()='i' || ch()='j' || ch()='k' || ch()='l' || ch()='m'
-        || ch()='n' || ch()='o' || ch()='p' || ch()='q' || ch()='r' || ch()='s' || ch()='t' || ch()='u' || ch()='v' || ch()='w' || ch()='x' || ch()='y' || ch()='z')
-        {
-            letter++;
-        }
-        else
-        {
-            if(ch=' ')
-            {
-                space++;
-            }
-            if(ch='\n')
-            {
-                nl++;
-            }
-        }
-    }
-}
-
-void wordcount()
-{
-
-    return word;
-}*/
+int space=0, word=0, nl=0, letter=0;
 
 int main()
 {
-    char ch,c;
+    char actual_char=' ',previous_char=' ';
     FILE *txt;
     txt=fopen("test","r");
-    while((ch=fgetc(txt))!=EOF)
+/*    if(txt==0)
     {
-        if(ch=='a' || ch=='b' || ch=='c' || ch=='d' || ch=='e' || ch=='f' || ch=='g' || ch=='h' || ch=='i' || ch=='j' || ch=='k' || ch=='l' || ch=='m' || ch=='n' || ch=='o' || ch=='p' || ch=='q' || ch=='r' || ch=='s' || ch=='t' || ch=='u' || ch=='v' || ch=='w' || ch=='x' || ch=='y' || ch=='z')
+        printf("%d",errno);  //there is no errno global variable
+    }*/
+    while((actual_char=fgetc(txt))!=EOF)
+    {
+        if(isalpha(actual_char))
         {
             letter++;
         }
         else
         {
-            if(ch==' ')
+            if(actual_char==' ')
             {
                 space++;
             }
-            if(ch=='\n')
+            if(actual_char=='\n')
             {
                 nl++;
             }
         }
-        c=ch;
-        if((ch==' ' || ch=='\n') && (c=='a' || c=='b' || c=='c' || c=='d' || c=='e' || c=='f' || c=='g' || c=='h' || c=='i' || c=='j' || c=='k' || c=='l' || c=='m' || c=='n' || c=='o' || c=='p' || c=='q' || c=='r' || c=='s' || c=='t' || c=='u' || c=='v' || c=='w' || c=='x' || c=='y' || c=='z'))
+        if((actual_char!=' ' || actual_char!='\n') && isspace(previous_char))
         {
             word++;
         }
+        previous_char=actual_char;
     }
     fclose(txt);
 //    read_file();
 //    numberofwords=wordcount();
-    printf("The number of letters in the text is:%d\nThe number of words is:%d\nThe number of spaces is:%d\nThe number of new lines is:%d",letter,word,space,nl);
+    printf("The number of letters in the text is:%d\n",letter);
+    printf("The number of words is:%d\n",word);
+    printf("The number of spaces is:%d\n",space);
+    printf("The number of new lines is:%d\n",nl);
     return 0;
 }
