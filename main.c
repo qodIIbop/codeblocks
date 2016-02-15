@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <errno.h>
 
 
 int space=0, word=0, nl=0, letter=0,letternumsum[1000],wordletternum=0;
@@ -49,10 +50,11 @@ int main()
     char previous_char=' ';
     FILE *txt;
     txt=fopen("test","r");
-/*    if(txt==0)
+    if(txt==0)
     {
-        printf("%d",errno);  //there is no errno global variable
-    }*/
+        printf("errno=%d",errno);  //there is no errno global variable
+        return 0;
+    }
     while((actual_char=fgetc(txt))!=EOF)
     {
         if(isalpha(actual_char))
