@@ -52,7 +52,7 @@ int main()
     txt=fopen("test","r");
     if(txt==0)
     {
-        printf("errno=%d",errno);  //there is no errno global variable
+        printf("errno=%d",errno);
         return 0;
     }
     while((actual_char=fgetc(txt))!=EOF)
