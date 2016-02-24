@@ -31,6 +31,14 @@ int ifnl()
         return 0;
     }
 }
+//if the actual char is a letter with apostrophe
+int ifekezet(fromtext)
+{
+    if(fromtext=='á' || fromtext=='é' || fromtext=='í' || fromtext=='ó' || fromtext=='ö' || fromtext=='ő' || fromtext=='ú' || fromtext=='ü' || fromtext=='ű')
+    {
+        return 1;
+    }
+}
 //fill an array with how many words are in the text with that number of letters
 void lettersumarrayfiller()
 {
@@ -43,20 +51,54 @@ void lettersumarrayfiller()
         }
     }
 }
+
+int qerror()
+{
+    if(wordletternum>=50)
+    {
+        return -1;
+    }
+    else if(actual_char<0)
+    {
+        return -2;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 int main()
 {
     int inword_toggle=0;
-    char previous_char=' ';
+    char previous_char=' '/*,input_filename=0*/;
     FILE *txt;
+/*    printf("Please enter full path of file: ");
+    scanf("%s",&input_filename);*/
     txt=fopen("test","r");
     if(txt==0)
     {
-        printf("errno=%d",errno);
+        perror("Error");
+        printf("\n");
+        printf("errno=%d\n",errno);
         return 0;
     }
     while((actual_char=fgetc(txt))!=EOF)
     {
-        if(isalpha(actual_char))
+/*        printf("%lc",actual_char);
+        printf("\t char value=%d\n",actual_char);*/
+        if(qerror()==0);
+        else if(qerror()==-1)
+        {
+            printf("The file contains text with invalid length!\n");
+            return 0;
+        }
+        else if(qerror()==-2)
+        {
+            printf("The file contains text with invalid input!\n");
+            return 0;
+        }
+        if(isalpha(actual_char)|| ifekezet(actual_char))
         {
             letter++;
         }
@@ -90,6 +132,7 @@ int main()
         if(inword_toggle==1)
         {
             wordletternum++;
+ //           printf("Size=%d\n",wordletternum);
         }
         else
         {
@@ -99,6 +142,7 @@ int main()
     }
     lettersumarrayfiller();
     fclose(txt);
+    printf("\n");
     printf("The number of letters in the text is:%d\n",letter);
     printf("The number of words is:%d\n",word);
     printf("The number of spaces is:%d\n",space);
