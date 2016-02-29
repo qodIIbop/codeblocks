@@ -3,9 +3,10 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <errno.h>
+#include <locale.h>
+#define ARRAYSIZE 50
 
-
-int space=0, word=0, nl=0, letter=0,letternumsum[50],wordletternum=0,i=0;
+int space=0, word=0, nl=0, letter=0,letternumsum[ARRAYSIZE],wordletternum=0,i=0;
 char actual_char=' ';
 //if the actual char is a space returns with 1, if not returns with 0
 int ifspace()
@@ -34,7 +35,7 @@ int ifnl()
 //fill an array with how many words are in the text with that number of letters
 void lettersumarrayfiller()
 {
-    for(i=1;i<50;i++)
+    for(i=1;i<ARRAYSIZE;i++)
     {
         if(i==wordletternum)
         {
@@ -43,10 +44,59 @@ void lettersumarrayfiller()
         }
     }
 }
+//errorhandling for ekezet and words larger than 50 letters
+int qerror()
+{
+    if(wordletternum>=ARRAYSIZE)
+    {
+        printf("ERROR:\nThe input file contains to large text!\n");
+        return -1;
+    }
+    else if(actual_char<0)
+    {
+        printf("ERROR:\nThe input file contains invalid characters!\n");
+        return -2;
+    }
+    else
+    {
+        return 0;
+    }
+}
+//calculate average and draw
+void drawsumcalc()
+{
+    int j=0,k=0;
+    float sumarray[ARRAYSIZE],sum=0;
+    i=0;
+    for(j=0;j<ARRAYSIZE;j++)
+    {
+        printf("array=%d i=%d\n",letternumsum[i],i);
+        sum+=letternumsum[i++];
+        printf("sum=%d\n",sum);
+    }
+    sum=sum/i;
+    printf("sum=%f",sum);
+    sumarray[k]=sum*letternumsum[i];
+    for(k=0;k<ARRAYSIZE;k++)
+    {
+        for(j=0;j<=i;j++)
+        {
+            printf("=");
+            if(j==i)
+            {
+                printf("\n");
+            }
+        }
+    }
+}
+
 int main()
 {
     int inword_toggle=0;
     char previous_char=' ';
+
+    setlocale(LC_ALL,"hun_HU.iso88592");
+
     FILE *txt;
     txt=fopen("test","r");
     if(txt==0)
@@ -56,6 +106,13 @@ int main()
     }
     while((actual_char=fgetc(txt))!=EOF)
     {
+        if(qerror()<0)
+        {
+            qerror();
+            return -1;
+        }
+//        printf("%c",actual_char);
+//        printf("\tvalue is=%d\n",actual_char);
         if(isalpha(actual_char))
         {
             letter++;
@@ -111,5 +168,6 @@ int main()
             printf("The number of %d letter words is=%d\n",i,letternumsum[i]);
         }
     }
+    drawsumcalc();
     return 0;
 }
