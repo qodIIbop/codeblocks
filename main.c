@@ -63,10 +63,11 @@ int qerror()
     }
 }
 //calculate average and draw
+/* Make better and work
 void drawsumcalc()
 {
-    int j=0,k=0;
-    float sumarray[ARRAYSIZE],sum=0;
+    int j=0,k=0,sum=0;
+    float sumarray[ARRAYSIZE];
     i=0;
     for(j=0;j<ARRAYSIZE;j++)
     {
@@ -75,19 +76,45 @@ void drawsumcalc()
         printf("sum=%d\n",sum);
     }
     sum=sum/i;
-    printf("sum=%f",sum);
+    printf("sum=%d\n",sum);
     sumarray[k]=sum*letternumsum[i];
     for(k=0;k<ARRAYSIZE;k++)
     {
         for(j=0;j<=i;j++)
         {
-            printf("=");
-            if(j==i)
+            i=0;
+            i++;
+            if(letternumsum[i]!=0)
             {
-                printf("\n");
+                printf("=");
+                if(j==i)
+                {
+                    printf("\n");
+                }
             }
         }
     }
+}*/
+//calculate average
+int avrcalc()
+{
+    int j=0,sum=0,counter=0;
+    float avr=0;
+    i=0;
+    printf("letternumsum[0]=%d counter=%d\n",letternumsum[0],counter);
+    for(j=0;j<50;j++)
+    {
+        sum+=letternumsum[++i];
+        printf("i=%d  ",i);
+        printf("sum=%d\n",sum);
+        if(letternumsum[i]!=0)
+        {
+            counter++;
+            printf("counter=%d\n",counter);
+        }
+    }
+    avr=sum/counter;
+    return avr;
 }
 
 int main()
@@ -168,6 +195,6 @@ int main()
             printf("The number of %d letter words is=%d\n",i,letternumsum[i]);
         }
     }
-    drawsumcalc();
+    avrcalc();
     return 0;
 }
