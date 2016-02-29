@@ -32,6 +32,14 @@ int ifnl()
         return 0;
     }
 }
+//if the actual char is a letter with apostrophe
+int ifekezet(fromtext)
+{
+    if(fromtext=='á' || fromtext=='é' || fromtext=='í' || fromtext=='ó' || fromtext=='ö' || fromtext=='ő' || fromtext=='ú' || fromtext=='ü' || fromtext=='ű')
+    {
+        return 1;
+    }
+}
 //fill an array with how many words are in the text with that number of letters
 void lettersumarrayfiller()
 {
@@ -44,17 +52,28 @@ void lettersumarrayfiller()
         }
     }
 }
+<<<<<<< HEAD
 //errorhandling for ekezet and words larger than 50 letters
 int qerror()
 {
     if(wordletternum>=ARRAYSIZE)
     {
         printf("ERROR:\nThe input file contains to large text!\n");
+=======
+
+int qerror()
+{
+    if(wordletternum>=50)
+    {
+>>>>>>> 3762b1cbece7ae4395f02591cc3757c6ac5661da
         return -1;
     }
     else if(actual_char<0)
     {
+<<<<<<< HEAD
         printf("ERROR:\nThe input file contains invalid characters!\n");
+=======
+>>>>>>> 3762b1cbece7ae4395f02591cc3757c6ac5661da
         return -2;
     }
     else
@@ -62,6 +81,7 @@ int qerror()
         return 0;
     }
 }
+<<<<<<< HEAD
 //calculate average and draw
 void drawsumcalc()
 {
@@ -89,23 +109,34 @@ void drawsumcalc()
         }
     }
 }
+=======
+>>>>>>> 3762b1cbece7ae4395f02591cc3757c6ac5661da
 
 int main()
 {
     int inword_toggle=0;
+<<<<<<< HEAD
     char previous_char=' ';
 
     setlocale(LC_ALL,"hun_HU.iso88592");
 
+=======
+    char previous_char=' '/*,input_filename=0*/;
+>>>>>>> 3762b1cbece7ae4395f02591cc3757c6ac5661da
     FILE *txt;
+/*    printf("Please enter full path of file: ");
+    scanf("%s",&input_filename);*/
     txt=fopen("test","r");
     if(txt==0)
     {
-        printf("errno=%d",errno);
+        perror("Error");
+        printf("\n");
+        printf("errno=%d\n",errno);
         return 0;
     }
     while((actual_char=fgetc(txt))!=EOF)
     {
+<<<<<<< HEAD
         if(qerror()<0)
         {
             qerror();
@@ -114,6 +145,22 @@ int main()
 //        printf("%c",actual_char);
 //        printf("\tvalue is=%d\n",actual_char);
         if(isalpha(actual_char))
+=======
+/*        printf("%lc",actual_char);
+        printf("\t char value=%d\n",actual_char);*/
+        if(qerror()==0);
+        else if(qerror()==-1)
+        {
+            printf("The file contains text with invalid length!\n");
+            return 0;
+        }
+        else if(qerror()==-2)
+        {
+            printf("The file contains text with invalid input!\n");
+            return 0;
+        }
+        if(isalpha(actual_char)|| ifekezet(actual_char))
+>>>>>>> 3762b1cbece7ae4395f02591cc3757c6ac5661da
         {
             letter++;
         }
@@ -147,6 +194,7 @@ int main()
         if(inword_toggle==1)
         {
             wordletternum++;
+ //           printf("Size=%d\n",wordletternum);
         }
         else
         {
@@ -156,6 +204,7 @@ int main()
     }
     lettersumarrayfiller();
     fclose(txt);
+    printf("\n");
     printf("The number of letters in the text is:%d\n",letter);
     printf("The number of words is:%d\n",word);
     printf("The number of spaces is:%d\n",space);
