@@ -4,10 +4,15 @@
 #include <ctype.h>
 #include <errno.h>
 #include <locale.h>
+#include <sys/ioctl.h>
+#include <math.h>
 #define ARRAYSIZE 50
+#define CHARCOUNT 16
 
-int space=0, word=0, nl=0, letter=0,letternumsum[ARRAYSIZE],wordletternum=0,i=0;
+int space=0, word=0, nl=0, letter=0,letternumsum[ARRAYSIZE],wordletternum=0,i=0,sum=0;
 char actual_char=' ';
+float rounded_graph_length[ARRAYSIZE];
+
 //if the actual char is a space returns with 1, if not returns with 0
 int ifspace()
 {
@@ -62,59 +67,95 @@ int qerror()
         return 0;
     }
 }
-//calculate average and draw
-/* Make better and work
-void drawsumcalc()
+//calculate average
+float avrcalc()
 {
-    int j=0,k=0,sum=0;
-    float sumarray[ARRAYSIZE];
+    int j=0,counter=0;
+    float avr=0;
+
+    i=0;sum=0;
+//    printf("letternumsum[0]=%d counter=%d\n",letternumsum[0],counter);
+    for(j=0;j<50;j++)
+    {
+        sum+=letternumsum[++i];
+        if(letternumsum[i]!=0)
+        {
+/*            printf("i=%d  ",i);
+            printf("sum=%d\n",sum);*/
+        }
+        if(letternumsum[i]!=0)
+        {
+            counter++;
+//            printf("counter=%d\n",counter);
+        }
+    }
+    avr=(float)counter/sum;
+//    printf("avr=%f\n",avr);
+    return avr;
+}
+//get terminal param
+int term_win_size()
+{
+    struct winsize w;
+    ioctl(0, TIOCGWINSZ, &w);
+
+//    printf ("lines %d\n", w.ws_row);
+//    printf ("columns %d\n", w.ws_col);
+    return w.ws_col;
+}
+//give back the display size
+int display_size()
+{
+    int display_size=0;
+
+    display_size=term_win_size()-CHARCOUNT;
+    return display_size;
+}
+//calculate 1% of the sum
+float onepercent()
+{
+    float percent=0;
+
+    percent=(float)display_size()/100;
+    return percent;
+}
+//tells you how long each element of the graph should be
+int make_graph()
+{
+    int j,k,total=0,graph_string_toggle=0;
+    float graph_i_length[ARRAYSIZE],a=0;
+
     i=0;
+    a=(float)display_size()/sum;
+//    printf("a=%.3f\n",a);
     for(j=0;j<ARRAYSIZE;j++)
     {
-        printf("array=%d i=%d\n",letternumsum[i],i);
-        sum+=letternumsum[i++];
-        printf("sum=%d\n",sum);
-    }
-    sum=sum/i;
-    printf("sum=%d\n",sum);
-    sumarray[k]=sum*letternumsum[i];
-    for(k=0;k<ARRAYSIZE;k++)
-    {
-        for(j=0;j<=i;j++)
+        if(letternumsum[i]!=0)
         {
-            i=0;
-            i++;
-            if(letternumsum[i]!=0)
+//            printf("letternumsum[%d]\n",i);
+            graph_i_length[j]=a*letternumsum[i]*onepercent();
+            rounded_graph_length[j]=ceilf(graph_i_length[j]);
+//            printf("The number of \"=\" in %d letter words is %f\n",i,rounded_graph_length[j]);
+            total+=rounded_graph_length[j];
+            //graphical part
+            do
+            {
+                printf("%d letter words: ",i);
+                graph_string_toggle=1;
+            }while(graph_string_toggle==0);
+            for(k=0;k<=rounded_graph_length[j];k++)
             {
                 printf("=");
-                if(j==i)
+                if(k==rounded_graph_length[j])
                 {
                     printf("\n");
                 }
             }
         }
+        i++;
     }
-}*/
-//calculate average
-int avrcalc()
-{
-    int j=0,sum=0,counter=0;
-    float avr=0;
-    i=0;
-    printf("letternumsum[0]=%d counter=%d\n",letternumsum[0],counter);
-    for(j=0;j<50;j++)
-    {
-        sum+=letternumsum[++i];
-        printf("i=%d  ",i);
-        printf("sum=%d\n",sum);
-        if(letternumsum[i]!=0)
-        {
-            counter++;
-            printf("counter=%d\n",counter);
-        }
-    }
-    avr=sum/counter;
-    return avr;
+//    printf("total=%d\n",total);
+
 }
 
 int main()
@@ -126,6 +167,7 @@ int main()
 
     FILE *txt;
     txt=fopen("test","r");
+
     if(txt==0)
     {
         printf("errno=%d",errno);
@@ -183,18 +225,27 @@ int main()
     }
     lettersumarrayfiller();
     fclose(txt);
+    avrcalc();
+    term_win_size();
+    onepercent();
+
     printf("The number of letters in the text is:%d\n",letter);
     printf("The number of words is:%d\n",word);
     printf("The number of spaces is:%d\n",space);
     printf("The number of new lines is:%d\n",nl);
     printf("\n\n");
-    for(i=0;i<50;i++)
+
+/*    for(i=0;i<ARRAYSIZE;i++)
     {
         if(letternumsum[i]!='\0')
         {
             printf("The number of %d letter words is=%d\n",i,letternumsum[i]);
         }
-    }
-    avrcalc();
+    }*/
+
+    make_graph();
+//    printf("terminal width is:%d",term_win_size());
+//    printf("1 percent is:%.3f\n",onepercent());
+    printf("display size is %d\n",display_size());
     return 0;
 }
