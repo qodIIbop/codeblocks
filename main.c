@@ -6,12 +6,13 @@
 #include <locale.h>
 #include <sys/ioctl.h>
 #include <math.h>
-#define ARRAYSIZE 50
-#define CHARCOUNT 16
+#define ARRAYSIZE 51
+#define CHARCOUNT 7
 
 int space=0, word=0, nl=0, letter=0,letternumsum[ARRAYSIZE],wordletternum=0,i=0,sum=0;
 char actual_char=' ';
 float rounded_graph_length[ARRAYSIZE];
+FILE *txt;
 
 //if the actual char is a space returns with 1, if not returns with 0
 int ifspace()
@@ -47,17 +48,16 @@ void lettersumarrayfiller()
             letternumsum[i]=letternumsum[i]+1;
             break;
         }
+        if(wordletternum>ARRAYSIZE)
+        {
+            letternumsum[ARRAYSIZE-1]=letternumsum[ARRAYSIZE-1]+1;
+        }
     }
 }
 //errorhandling for ekezet and words larger than 50 letters
 int qerror()
 {
-    if(wordletternum>=ARRAYSIZE)
-    {
-        printf("ERROR:\nThe input file contains to large text!\n");
-        return -1;
-    }
-    else if(actual_char<0)
+    if(actual_char<0)
     {
         printf("ERROR:\nThe input file contains invalid characters!\n");
         return -2;
@@ -134,14 +134,26 @@ int make_graph()
         {
 //            printf("letternumsum[%d]\n",i);
             graph_i_length[j]=a*letternumsum[i]*onepercent();
-            rounded_graph_length[j]=ceilf(graph_i_length[j]);
-//            printf("The number of \"=\" in %d letter words is %f\n",i,rounded_graph_length[j]);
+            rounded_graph_length[j]=roundf(graph_i_length[j]);
+//            printf("The number of \"=\" in %d letter words is %.2f\n",i,rounded_graph_length[j]);
             total+=rounded_graph_length[j];
             //graphical part
             do
             {
-                printf("%d letter words: ",i);
-                graph_string_toggle=1;
+                if(i<10)
+                {
+                    printf("Word #%3d: ",i);
+                    graph_string_toggle=1;
+                }
+                else if(i==(ARRAYSIZE-1))
+                {
+                    printf("Word #%d+: ",i);
+                }
+                else
+                {
+                    printf("Word #%3d: ",i);
+                    graph_string_toggle=1;
+                }
             }while(graph_string_toggle==0);
             for(k=0;k<=rounded_graph_length[j];k++)
             {
@@ -165,8 +177,8 @@ int main()
 
     setlocale(LC_ALL,"hun_HU.iso88592");
 
-    FILE *txt;
-    txt=fopen("test","r");
+
+    txt=fopen("test3.pdf","r");
 
     if(txt==0)
     {
@@ -175,11 +187,11 @@ int main()
     }
     while((actual_char=fgetc(txt))!=EOF)
     {
-        if(qerror()<0)
+/*        if(qerror()<0)
         {
             qerror();
             return -1;
-        }
+        }*/
 //        printf("%c",actual_char);
 //        printf("\tvalue is=%d\n",actual_char);
         if(isalpha(actual_char))
@@ -229,10 +241,10 @@ int main()
     term_win_size();
     onepercent();
 
-    printf("The number of letters in the text is:%d\n",letter);
-    printf("The number of words is:%d\n",word);
-    printf("The number of spaces is:%d\n",space);
-    printf("The number of new lines is:%d\n",nl);
+    printf("The number of letters: %5d\n",letter);
+    printf("The number of words: %6d\n",word);
+    printf("The number of spaces: %5d\n",space);
+    printf("The number of new lines: %d\n",nl);
     printf("\n\n");
 
 /*    for(i=0;i<ARRAYSIZE;i++)
@@ -246,6 +258,6 @@ int main()
     make_graph();
 //    printf("terminal width is:%d",term_win_size());
 //    printf("1 percent is:%.3f\n",onepercent());
-    printf("display size is %d\n",display_size());
+//    printf("display size is %d\n",display_size());
     return 0;
 }
